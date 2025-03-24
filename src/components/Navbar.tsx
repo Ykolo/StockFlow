@@ -1,5 +1,5 @@
 "use client"
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@radix-ui/react-navigation-menu';
+import { NavigationMenu, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from '@radix-ui/react-navigation-menu';
 import { Package } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
@@ -8,7 +8,7 @@ const Navbar = () => {
 
   return (
     <NavigationMenu className="bg-marine text-amande p-8">
-      <NavigationMenuList className="flex gap-8">
+      <NavigationMenuList className="flex gap-8 items-center">
 
         <NavigationMenuItem>
           <NavigationMenuTrigger asChild>
@@ -19,13 +19,13 @@ const Navbar = () => {
           </NavigationMenuTrigger>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
+        <NavigationMenuItem className='flex items-center flex-col'>
           <NavigationMenuTrigger>
-            oui
+            <Link href={"/companies"}>Entreprises</Link>
           </NavigationMenuTrigger>
-          <NavigationMenuContent>
+          {/* <NavigationMenuContent>
             <NavigationMenuLink>Test</NavigationMenuLink>
-          </NavigationMenuContent>
+          </NavigationMenuContent> */}
         </NavigationMenuItem>
         {/* <div className='flex ml-auto'> 
           <Link href={"/dashboard"}>

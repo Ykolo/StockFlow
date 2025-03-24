@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
@@ -5,7 +6,6 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 
 const DashboardPage = async () => {
-
   return (
     <div className="flex flex-col bg-amande min-h-screen">
       <Navbar />
@@ -20,7 +20,7 @@ const DashboardPage = async () => {
             <p>Veuillez d'abord vous connecter ou créer un compte</p>
             <div className="flex justify-end gap-4">
               <Button asChild className="text-marine" variant={"outline"}>
-                <Link href="/login">
+                <Link href="/login" >
                   Connexion
                 </Link>
               </Button>
