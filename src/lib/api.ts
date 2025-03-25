@@ -1,8 +1,9 @@
+'use server';
 import { headers } from 'next/headers';
 
 export const fetchCompanies = async () => {
   try {
-    const response = await fetch('/api/companies');
+    const response = await fetch(`${process.env.LOCAL_URL}/api/companies`);
     const data = await response.json();
     return data;
   } catch (e) {
@@ -20,6 +21,19 @@ export const fetchUser = async () => {
         cookie: cookieHeader || '',
       },
     });
+    const data = await response.json();
+    return data;
+  } catch (e: any) {
+    console.error(e.message);
+    return { error: e.message };
+  }
+};
+
+export const fetchComapnyById = async (id: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.LOCAL_URL}/api/companies/${id}`
+    );
     const data = await response.json();
     return data;
   } catch (e: any) {

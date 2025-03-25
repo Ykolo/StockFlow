@@ -1,9 +1,14 @@
-import Footer from "../../components/Footer"
-import Navbar from "../../components/Navbar"
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import Companies from "./Companies"
+import Footer from '../../components/Footer';
+import Navbar from '../../components/Navbar';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '../../components/ui/card';
+import Companies from './Companies';
 
-const CompanyPage = () => {
+const CompaniesPage = () => {
   return (
     <div className="bg-amande min-h-screen flex flex-col">
       <Navbar />
@@ -21,6 +26,6 @@ const CompanyPage = () => {
       </main>
       <Footer />
     </div>
-  )
-}
-export default CompanyPage
+  );
+};
+export default CompaniesPage;

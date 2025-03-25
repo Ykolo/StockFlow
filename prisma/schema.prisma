@@ -17,36 +17,42 @@ model Company {
 }
 
 model Employee {
-  id            String          @id @default(uuid())
-  name          String
-  email         String          @unique
-  password      String
-  role          String // Ex: "admin", "user"
-  company       Company         @relation(fields: [companyId], references: [id])
-  companyId     String
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  StockMovement StockMovement[]
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String // Ex: "admin", "user"
+  company   Company  @relation(fields: [companyId], references: [id])
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Product {
-  id        String          @id @default(uuid())
-  name      String
-  quantity  Int
-  company   Company         @relation(fields: [companyId], references: [id])
-  companyId String
-  movements StockMovement[]
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id         String            @id @default(uuid())
+  name       String
+  quantity   Int
+  company    Company           @relation(fields: [companyId], references: [id])
+  companyId  String
+  categories ProductCategory[]
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
 }
 
-model StockMovement {
-  id         String   @id @default(uuid())
-  type       String // "entry" | "exit"
-  quantity   Int
+model Category {
+  id        String            @id @default(uuid())
+  name      String
+  products  ProductCategory[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model ProductCategory {
   product    Product  @relation(fields: [productId], references: [id])
   productId  String
-  employee   Employee @relation(fields: [employeeId], references: [id])
-  employeeId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
   createdAt  DateTime @default(now())
+
+  @@id([productId, categoryId]) // Clé primaire composite pour la table associative
 }

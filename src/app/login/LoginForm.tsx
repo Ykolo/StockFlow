@@ -42,7 +42,9 @@ const LoginForm = () => {
       const result = await login(formData.login, formData.password);
       if (result && result.success) {
         toast.success('Authentification réussie');
-        router.push('/dashboard');
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 2000);
       } else {
         toast.error(result?.message || "Erreur lors de l'authentification");
       }
@@ -88,6 +90,7 @@ const LoginForm = () => {
                   placeholder="Mot de passe..."
                   {...field}
                   className="placeholder:text-marine/50 border-marine/20"
+                  type="password"
                 />
               </FormControl>
             </FormItem>
