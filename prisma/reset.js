@@ -44,18 +44,18 @@ function main() {
             switch (_a.label) {
                 case 0:
                     console.log('🧹 Suppression des données...');
-                    // Ordre inverse des dépendances à respecter
-                    return [4 /*yield*/, prisma.category.deleteMany()];
-                case 1:
-                    // Ordre inverse des dépendances à respecter
-                    _a.sent();
+                    // Supprimer dans l'ordre des dépendances
                     return [4 /*yield*/, prisma.productCategory.deleteMany()];
+                case 1:
+                    // Supprimer dans l'ordre des dépendances
+                    _a.sent(); // ← lier les produits aux catégories
+                    return [4 /*yield*/, prisma.product.deleteMany()];
                 case 2:
                     _a.sent();
-                    return [4 /*yield*/, prisma.product.deleteMany()];
-                case 3:
-                    _a.sent();
                     return [4 /*yield*/, prisma.employee.deleteMany()];
+                case 3:
+                    _a.sent(); // ← si tu as des employés liés aux entreprises
+                    return [4 /*yield*/, prisma.category.deleteMany()];
                 case 4:
                     _a.sent();
                     return [4 /*yield*/, prisma.company.deleteMany()];

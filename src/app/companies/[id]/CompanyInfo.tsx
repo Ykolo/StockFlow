@@ -11,27 +11,63 @@ import {
 } from '@/components/ui/table';
 import { fetchComapnyById, fetchUser } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Button } from '../../../components/ui/button';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '../../../components/ui/pagination';
+import { deleteProduct } from '../../../lib/action/product.action';
 
 interface CompanyInfoProps {
   id: string;
 }
 const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
+  const [productPage, setProductPage] = useState(1);
+  const [employeePage, setEmployeePage] = useState(1);
+  const router = useRouter();
+
+  const PAGE_SIZE = 10;
+
   const { data: company, isLoading: isLoadingCompany } = useQuery({
     queryKey: ['company', id],
     queryFn: () => fetchComapnyById(id),
   });
-  const { data: user, isLoading: isLoadingUser } = useQuery({
+  const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: fetchUser,
   });
-  useEffect(() => {
-    setTimeout(() => {
-      console.log(company);
-      console.log(user);
-    }, 2000);
-  }, [user]);
+
+  const paginatedProducts = company?.products
+    ? company.products.slice(
+        (productPage - 1) * PAGE_SIZE,
+        productPage * PAGE_SIZE
+      )
+    : [];
+  const productsPageCount = company?.products
+    ? Math.ceil(company.products.length / PAGE_SIZE)
+    : 1;
+
+  const paginatedEmployees = company?.employees
+    ? company.employees.slice(
+        (employeePage - 1) * PAGE_SIZE,
+        employeePage * PAGE_SIZE
+      )
+    : [];
+  const employeesPageCount = company?.employees
+    ? Math.ceil(company.employees.length / PAGE_SIZE)
+    : 1;
+
+  const handleDeleteProduct = async (id: string) => {
+    await deleteProduct(id);
+    window.location.reload();
+  };
+
   if (isLoadingCompany) {
     return (
       <div className="flex justify-center items-center flex-1">
@@ -46,7 +82,12 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
           <CardTitle className="text-4xl">{company.name}</CardTitle>
         </CardHeader>
         <CardContent>
-          <h1 className="font-bold text-2xl">Liste des produits</h1>
+          <div className="flex">
+            <h1 className="font-bold text-2xl">Liste des produits</h1>
+            <Button className="ml-auto bg-mangue hover:bg-mangue-hover text-marine">
+              Ajouter un produit
+            </Button>
+          </div>
           <Table className="mt-4">
             <TableCaption>Liste des produits</TableCaption>
             <TableHeader>
@@ -63,7 +104,7 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {company?.products.map((product: any, index: number) => (
+              {paginatedProducts.map((product: any, index: number) => (
                 <TableRow key={index} className="hover:bg-marine/5 w-full">
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.quantity}</TableCell>
@@ -80,12 +121,17 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
                   {user && user.name && (
                     <>
                       <TableCell>
-                        <Button variant={'outline'}>Modifier</Button>
+                        <Button variant={'outline'} asChild>
+                          <Link href={`/product/edit/${product.id}`}>
+                            Modifier
+                          </Link>
+                        </Button>
                       </TableCell>
                       <TableCell>
                         <Button
                           variant={'destructive'}
                           className="bg-feu hover:bg-feu-hover"
+                          onClick={() => handleDeleteProduct(product.id)}
                         >
                           Supprimer
                         </Button>
@@ -96,6 +142,42 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
               ))}
             </TableBody>
           </Table>
+          {company.products.length > PAGE_SIZE && (
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() =>
+                      setProductPage(prev => Math.max(prev - 1, 1))
+                    }
+                    className={
+                      productPage === 1
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-default'
+                    }
+                  />
+                </PaginationItem>
+                <PaginationItem className="cursor-default px-4 text-sm">
+                  Page {productPage} sur {productsPageCount}
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      setProductPage(prev =>
+                        Math.min(prev + 1, productsPageCount)
+                      )
+                    }
+                    className={
+                      productPage === productsPageCount
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-default'
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+
           <h1 className="text-marine text-2xl mt-10 font-bold">
             Liste des employés
           </h1>
@@ -110,7 +192,7 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {company?.employees.map((employee: any, index: number) => (
+              {paginatedEmployees.map((employee: any, index: number) => (
                 <TableRow key={index} className="hover:bg-marine/5">
                   <TableCell>{employee.name}</TableCell>
                   <TableCell>{employee.email}</TableCell>
@@ -132,6 +214,41 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
               ))}
             </TableBody>
           </Table>
+          {company.employees.length > PAGE_SIZE && (
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() =>
+                      setEmployeePage(prev => Math.max(prev - 1, 1))
+                    }
+                    className={
+                      employeePage === 1
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-default'
+                    }
+                  />
+                </PaginationItem>
+                <PaginationItem className="cursor-default px-4 text-sm">
+                  Page {employeePage} sur {employeesPageCount}
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      setEmployeePage(prev =>
+                        Math.min(prev + 1, employeesPageCount)
+                      )
+                    }
+                    className={
+                      employeePage === employeesPageCount
+                        ? 'pointer-events-none opacity-50'
+                        : 'cursor-default'
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </CardContent>
       </Card>
     </div>

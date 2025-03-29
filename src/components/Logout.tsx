@@ -20,7 +20,11 @@ const LogoutButton = () => {
     }
   };
   return (
-    <Button variant={'outline'} onClick={handleLogout}>
+    <Button
+      variant={'outline'}
+      onClick={handleLogout}
+      className="bg-mangue hover:bg-mangue-hover text-marine"
+    >
       Déconnexion
     </Button>
   );

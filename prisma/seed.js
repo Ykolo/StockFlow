@@ -35,16 +35,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var client_1 = require("@prisma/client");
+var argon2 = require("argon2");
 var prisma = new client_1.PrismaClient();
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var companyNames, _i, companyNames_1, name_1, companies, categoryNames, _a, categoryNames_1, name_2, categories, productCatalog, _b, companies_1, company, _c, productCatalog_1, item, product, _loop_1, _d, _e, catName;
+        var companyNames, _i, companyNames_1, name_1, companies, hashedPassword, categoryNames, _a, categoryNames_1, name_2, categories, productCatalog, _b, companies_1, company, numProducts, shuffled, selectedProducts, _c, selectedProducts_1, item, product, _loop_1, _d, _e, catName;
         return __generator(this, function (_f) {
             switch (_f.label) {
                 case 0:
-                    companyNames = ['Carrefour', 'Leclerc', 'Intermarché'];
+                    companyNames = [
+                        'Carrefour',
+                        'Leclerc',
+                        'Intermarché',
+                        'Auchan',
+                        'Monoprix',
+                    ];
                     _i = 0, companyNames_1 = companyNames;
                     _f.label = 1;
                 case 1:
@@ -60,55 +76,117 @@ function main() {
                 case 4: return [4 /*yield*/, prisma.company.findMany()];
                 case 5:
                     companies = _f.sent();
+                    return [4 /*yield*/, argon2.hash('admin')];
+                case 6:
+                    hashedPassword = _f.sent();
+                    return [4 /*yield*/, prisma.employee.create({
+                            data: {
+                                name: 'Admin',
+                                email: 'admin@admin.com',
+                                password: hashedPassword,
+                                role: 'patron',
+                                companyId: companies[0].id,
+                            },
+                        })];
+                case 7:
+                    _f.sent();
                     categoryNames = [
                         'Informatique',
                         'Bureautique',
                         'Électroménager',
                         'Multimédia',
                         'Téléphonie',
+                        'Jeux vidéo',
+                        'Mobilier',
+                        'Papeterie',
+                        'Image et Son',
+                        'Réseau',
+                        'Accessoires',
                     ];
                     _a = 0, categoryNames_1 = categoryNames;
-                    _f.label = 6;
-                case 6:
-                    if (!(_a < categoryNames_1.length)) return [3 /*break*/, 9];
-                    name_2 = categoryNames_1[_a];
-                    return [4 /*yield*/, prisma.category.create({ data: { name: name_2 } })];
-                case 7:
-                    _f.sent();
                     _f.label = 8;
                 case 8:
-                    _a++;
-                    return [3 /*break*/, 6];
-                case 9: return [4 /*yield*/, prisma.category.findMany()];
+                    if (!(_a < categoryNames_1.length)) return [3 /*break*/, 11];
+                    name_2 = categoryNames_1[_a];
+                    return [4 /*yield*/, prisma.category.create({ data: { name: name_2 } })];
+                case 9:
+                    _f.sent();
+                    _f.label = 10;
                 case 10:
+                    _a++;
+                    return [3 /*break*/, 8];
+                case 11: return [4 /*yield*/, prisma.category.findMany()];
+                case 12:
                     categories = _f.sent();
                     productCatalog = [
                         { name: 'Ordinateur portable', categories: ['Informatique'] },
                         { name: 'Imprimante laser', categories: ['Informatique', 'Bureautique'] },
                         { name: 'Réfrigérateur', categories: ['Électroménager'] },
-                        { name: 'Télévision LED', categories: ['Multimédia'] },
-                        { name: 'Clé USB 64 Go', categories: ['Informatique'] },
+                        { name: 'Télévision LED', categories: ['Multimédia', 'Image et Son'] },
+                        { name: 'Clé USB 64 Go', categories: ['Informatique', 'Accessoires'] },
                         { name: 'Smartphone Android', categories: ['Téléphonie', 'Multimédia'] },
                         { name: 'Scanner A4', categories: ['Bureautique'] },
                         { name: 'Micro-ondes', categories: ['Électroménager'] },
-                        { name: 'Routeur Wi-Fi', categories: ['Informatique'] },
-                        { name: 'Enceinte Bluetooth', categories: ['Multimédia'] },
-                        { name: 'Casque audio', categories: ['Multimédia'] },
+                        { name: 'Routeur Wi-Fi', categories: ['Informatique', 'Réseau'] },
+                        { name: 'Enceinte Bluetooth', categories: ['Multimédia', 'Accessoires'] },
+                        { name: 'Casque audio', categories: ['Multimédia', 'Image et Son'] },
                         { name: 'Machine à laver', categories: ['Électroménager'] },
                         { name: 'Tablette tactile', categories: ['Téléphonie', 'Informatique'] },
-                        { name: 'Clavier mécanique', categories: ['Informatique'] },
+                        { name: 'Clavier mécanique', categories: ['Informatique', 'Accessoires'] },
                         { name: 'Lampe LED USB', categories: ['Bureautique'] },
+                        { name: 'Disque dur externe 1To', categories: ['Informatique'] },
+                        { name: 'Fauteuil de bureau ergonomique', categories: ['Mobilier'] },
+                        { name: 'Jeu vidéo PS5', categories: ['Jeux vidéo'] },
+                        { name: 'Caméra de surveillance', categories: ['Multimédia', 'Réseau'] },
+                        { name: 'Chargeur sans fil', categories: ['Accessoires', 'Téléphonie'] },
+                        { name: 'Carnet A5', categories: ['Papeterie'] },
+                        { name: 'Stylo plume', categories: ['Papeterie'] },
+                        { name: 'Bureau en bois', categories: ['Mobilier'] },
+                        { name: 'Imprimante photo', categories: ['Multimédia', 'Bureautique'] },
+                        { name: 'Répéteur Wi-Fi', categories: ['Réseau'] },
+                        { name: 'Webcam HD', categories: ['Multimédia'] },
+                        { name: 'Ventilateur USB', categories: ['Accessoires'] },
+                        { name: 'Projecteur LED', categories: ['Image et Son'] },
+                        {
+                            name: 'Écouteurs intra-auriculaires',
+                            categories: ['Accessoires', 'Multimédia'],
+                        },
+                        { name: 'Switch réseau 8 ports', categories: ['Réseau'] },
+                        { name: 'Souris sans fil', categories: ['Accessoires', 'Informatique'] },
+                        { name: 'Tapis de souris RGB', categories: ['Accessoires'] },
+                        { name: 'Support pour ordinateur portable', categories: ['Mobilier'] },
+                        { name: 'Chaise gaming', categories: ['Mobilier'] },
+                        { name: 'Lecteur DVD externe', categories: ['Informatique'] },
+                        { name: 'Station de charge multiple', categories: ['Accessoires'] },
+                        { name: 'Lampe de bureau réglable', categories: ['Bureautique'] },
+                        { name: 'Plastifieuse A4', categories: ['Bureautique'] },
+                        { name: 'Tableau blanc magnétique', categories: ['Bureautique'] },
+                        { name: 'Boîte de classement A4', categories: ['Papeterie'] },
+                        { name: 'Trousse scolaire', categories: ['Papeterie'] },
+                        { name: 'Téléphone sans fil DECT', categories: ['Téléphonie'] },
+                        { name: 'Caméscope HD', categories: ['Multimédia'] },
+                        { name: 'Console de jeu portable', categories: ['Jeux vidéo'] },
+                        { name: 'Chaise pliante', categories: ['Mobilier'] },
+                        { name: 'Carte SD 128 Go', categories: ['Accessoires'] },
+                        { name: 'Support mural TV', categories: ['Image et Son'] },
+                        { name: 'Écran PC 27 pouces', categories: ['Informatique'] },
+                        { name: 'Mini projecteur portable', categories: ['Image et Son'] },
+                        { name: 'Multiprise parafoudre', categories: ['Accessoires'] },
+                        { name: 'Pochettes plastiques perforées', categories: ['Papeterie'] },
                     ];
                     _b = 0, companies_1 = companies;
-                    _f.label = 11;
-                case 11:
-                    if (!(_b < companies_1.length)) return [3 /*break*/, 19];
+                    _f.label = 13;
+                case 13:
+                    if (!(_b < companies_1.length)) return [3 /*break*/, 21];
                     company = companies_1[_b];
-                    _c = 0, productCatalog_1 = productCatalog;
-                    _f.label = 12;
-                case 12:
-                    if (!(_c < productCatalog_1.length)) return [3 /*break*/, 18];
-                    item = productCatalog_1[_c];
+                    numProducts = Math.floor(Math.random() * 6) + 15;
+                    shuffled = __spreadArray([], productCatalog, true).sort(function () { return 0.5 - Math.random(); });
+                    selectedProducts = shuffled.slice(0, numProducts);
+                    _c = 0, selectedProducts_1 = selectedProducts;
+                    _f.label = 14;
+                case 14:
+                    if (!(_c < selectedProducts_1.length)) return [3 /*break*/, 20];
+                    item = selectedProducts_1[_c];
                     return [4 /*yield*/, prisma.product.create({
                             data: {
                                 name: item.name,
@@ -116,7 +194,7 @@ function main() {
                                 companyId: company.id,
                             },
                         })];
-                case 13:
+                case 15:
                     product = _f.sent();
                     _loop_1 = function (catName) {
                         var category;
@@ -139,24 +217,24 @@ function main() {
                         });
                     };
                     _d = 0, _e = item.categories;
-                    _f.label = 14;
-                case 14:
-                    if (!(_d < _e.length)) return [3 /*break*/, 17];
-                    catName = _e[_d];
-                    return [5 /*yield**/, _loop_1(catName)];
-                case 15:
-                    _f.sent();
                     _f.label = 16;
                 case 16:
-                    _d++;
-                    return [3 /*break*/, 14];
+                    if (!(_d < _e.length)) return [3 /*break*/, 19];
+                    catName = _e[_d];
+                    return [5 /*yield**/, _loop_1(catName)];
                 case 17:
-                    _c++;
-                    return [3 /*break*/, 12];
+                    _f.sent();
+                    _f.label = 18;
                 case 18:
-                    _b++;
-                    return [3 /*break*/, 11];
+                    _d++;
+                    return [3 /*break*/, 16];
                 case 19:
+                    _c++;
+                    return [3 /*break*/, 14];
+                case 20:
+                    _b++;
+                    return [3 /*break*/, 13];
+                case 21:
                     console.log('✅ Données seed insérées avec succès !');
                     return [2 /*return*/];
             }

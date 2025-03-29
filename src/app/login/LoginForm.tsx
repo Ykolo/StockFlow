@@ -44,7 +44,7 @@ const LoginForm = () => {
         toast.success('Authentification réussie');
         setTimeout(() => {
           router.push('/dashboard');
-        }, 2000);
+        }, 1000);
       } else {
         toast.error(result?.message || "Erreur lors de l'authentification");
       }

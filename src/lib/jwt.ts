@@ -7,8 +7,9 @@ export const generateToken = (user: {
   email: string;
   role: string;
   name: string;
+  companyId: string;
 }) => {
   return jwt.sign(user, SECRET_KEY as string, {
-    expiresIn: '1h',
+    expiresIn: '10d',
   });
 };

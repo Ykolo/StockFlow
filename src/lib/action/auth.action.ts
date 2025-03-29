@@ -1,5 +1,6 @@
 'use server';
 
+import * as argon2 from 'argon2';
 import { cookies } from 'next/headers';
 import { generateToken } from '../jwt';
 import { prisma } from '../prisma';
@@ -21,7 +22,8 @@ export const login = async (email: string, password: string) => {
     if (!employee) {
       return { success: false, message: 'Email incorrect' };
     }
-    if (employee.password !== password) {
+    const isPasswordValid = await argon2.verify(employee.password, password);
+    if (!isPasswordValid) {
       return { success: false, message: 'Mot de passe incorrect' };
     }
     const token = generateToken({
@@ -29,6 +31,7 @@ export const login = async (email: string, password: string) => {
       email: employee.email,
       role: employee.role,
       name: employee.name,
+      companyId: employee.companyId,
     });
     await setAuthToken(token);
     return {
