@@ -203,14 +203,6 @@ export const CategoryCombobox = ({
           role="combobox"
           className="w-full justify-between bg-amande hover:bg-amande-hover hover:text-marine-hover"
         >
-          {/* {value?.length > 0
-            ? value.map(id => options.find(o => o.id === id)?.label).join(', ')
-            : 'Choisir les catégories'} */}
-          {/* {Array.isArray(value) && Array.isArray(options) && value.length > 0
-            ? value
-                .map(id => options.find(o => o.id === id)?.label ?? '[inconnu]')
-                .join(', ')
-            : 'Choisir les catégories'} */}
           {value.length > 0 && options.length > 0
             ? value
                 .map(id => options.find(o => o.id === id)?.label)

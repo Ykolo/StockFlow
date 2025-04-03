@@ -48,15 +48,15 @@ const UpdateForm = ({ id }: { id: string }) => {
     defaultValues: {
       name: product?.name ?? '',
       quantity: product?.quantity ?? '',
-      categories: product?.categories ?? [],
+      categories: product?.categories.category ?? [],
     },
   });
   useEffect(() => {
     if (product && categories) {
       const validCategoryIds = categories?.map((c: any) => c.id);
-      const safeCategoryIds = (product.categories ?? []).filter((id: any) =>
-        validCategoryIds.includes(id)
-      );
+      const safeCategoryIds = (product.categories ?? [])
+        .map((c: any) => (typeof c === 'string' ? c : c.id))
+        .filter((id: any) => validCategoryIds.includes(id));
 
       form.reset({
         name: product.name,
