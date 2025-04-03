@@ -41,7 +41,7 @@ Elle permet la gestion des entreprises, des employés, des produits, des catégo
 ### 1. 📥 Cloner le dépôt
 
 ```bash
-git clone https://github.com/<votre-utilisateur>/stockflow.git
+git clone https://github.com/Ykolo/StockFlow.git
 cd stockflow
 ```
 
