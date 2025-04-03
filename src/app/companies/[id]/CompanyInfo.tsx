@@ -1,5 +1,20 @@
 'use client';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import {
   Table,
   TableBody,
@@ -9,20 +24,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { deleteProduct } from '@/lib/action/product.action';
 import { fetchComapnyById, fetchUser } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Button } from '../../../components/ui/button';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '../../../components/ui/pagination';
-import { deleteProduct } from '../../../lib/action/product.action';
 
 interface CompanyInfoProps {
   id: string;
@@ -30,6 +37,8 @@ interface CompanyInfoProps {
 const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
   const [productPage, setProductPage] = useState(1);
   const [employeePage, setEmployeePage] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState('');
   const router = useRouter();
 
   const PAGE_SIZE = 10;
@@ -84,8 +93,11 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
         <CardContent>
           <div className="flex">
             <h1 className="font-bold text-2xl">Liste des produits</h1>
-            <Button className="ml-auto bg-mangue hover:bg-mangue-hover text-marine">
-              Ajouter un produit
+            <Button
+              className="ml-auto bg-mangue hover:bg-mangue-hover text-marine"
+              asChild
+            >
+              <Link href={`/product/add/${id}`}>Ajouter un produit</Link>
             </Button>
           </div>
           <Table className="mt-4">
@@ -131,7 +143,10 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
                         <Button
                           variant={'destructive'}
                           className="bg-feu hover:bg-feu-hover"
-                          onClick={() => handleDeleteProduct(product.id)}
+                          onClick={() => {
+                            setOpen(true);
+                            setSelectedId(product.id);
+                          }}
                         >
                           Supprimer
                         </Button>
@@ -249,6 +264,30 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
               </PaginationContent>
             </Pagination>
           )}
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent className="w-full max-w-sm bg-amande text-marine">
+              <DialogHeader>
+                <DialogTitle>Supprimer le produit ?</DialogTitle>
+              </DialogHeader>
+              <p>Etes vous sur de vouloir supprimer ce produit ?</p>
+              <DialogFooter>
+                <Button
+                  variant={'outline'}
+                  onClick={() => setOpen(false)}
+                  className="border-marine/50"
+                >
+                  Annuler
+                </Button>
+                <Button
+                  variant={'destructive'}
+                  onClick={() => handleDeleteProduct(selectedId)}
+                  className="bg-feu hover:bg-feu-hover"
+                >
+                  Supprimer
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
     </div>

@@ -23,6 +23,7 @@ export const GET = async (
         },
         products: {
           select: {
+            id: true,
             name: true,
             quantity: true,
             categories: {
