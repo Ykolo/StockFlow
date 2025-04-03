@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { fetchCategories, fetchProductById } from '@/lib/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -31,6 +32,8 @@ const updateFormSchema = z.object({
 type updateFormType = z.infer<typeof updateFormSchema>;
 
 const UpdateForm = ({ id }: { id: string }) => {
+  const router = useRouter();
+
   const { data: product } = useQuery({
     queryKey: ['product', id],
     queryFn: () => fetchProductById(id),
@@ -68,6 +71,9 @@ const UpdateForm = ({ id }: { id: string }) => {
       const response = await updateProduct(product.id, data);
       if (response.success) {
         toast.success(response.message);
+        setTimeout(() => {
+          router.push(`/companies/${product.companyId}`);
+        }, 1000);
       } else {
         toast.error(response.message);
       }
