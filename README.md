@@ -44,3 +44,43 @@ Elle permet la gestion des entreprises, des employés, des produits, des catégo
 git clone https://github.com/<votre-utilisateur>/stockflow.git
 cd stockflow
 ```
+
+### 2. Installer pnpm
+
+```bash
+npm install -g pnpm
+```
+
+### 3. Installer les dépendances
+
+```bash
+pnpm install
+```
+
+### 4. ⚙️ Configurer les variables d’environnement
+
+Copiez le fichier `.env` et remplissez les variables d’environnement. Créer la base de données PostgreSQL et l’initialiser.
+
+### 5. Remplir la base de données PostgreSQL
+
+```bash
+node prisma/seed.js
+```
+
+### En cas de problème vous pouvez supprimer la base de données et la réinitialiser
+
+```bash
+node prisma/reset.js
+```
+
+### 6. Lancer l’application
+
+```bash
+pnpm dev
+```
+
+### Pour les tests unitaires
+
+```bash
+pnpm test
+```
