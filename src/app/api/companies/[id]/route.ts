@@ -16,6 +16,7 @@ export const GET = async (
         name: true,
         employees: {
           select: {
+            id: true,
             name: true,
             email: true,
             role: true,

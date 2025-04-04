@@ -28,8 +28,9 @@ import { deleteProduct } from '@/lib/action/product.action';
 import { fetchComapnyById, fetchUser } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { deleteEmployee } from '../../../lib/action/employee.action';
 
 interface CompanyInfoProps {
   id: string;
@@ -37,9 +38,10 @@ interface CompanyInfoProps {
 const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
   const [productPage, setProductPage] = useState(1);
   const [employeePage, setEmployeePage] = useState(1);
-  const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState('');
-  const router = useRouter();
+  const [openProduct, setOpenProduct] = useState(false);
+  const [openEmployee, setOpenEmployee] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState('');
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState('');
 
   const PAGE_SIZE = 10;
 
@@ -73,8 +75,31 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
     : 1;
 
   const handleDeleteProduct = async (id: string) => {
-    await deleteProduct(id);
-    window.location.reload();
+    try {
+      const response = await deleteProduct(id);
+      if (!response.success) {
+        toast.error(response.message);
+        return;
+      }
+      toast.success('Le produit a été supprimé avec succès');
+      window.location.reload();
+    } catch (e: any) {
+      console.error(e.message);
+    }
+  };
+  const handleDeleteEmployee = async (id: string) => {
+    console.log(id);
+    try {
+      const response = await deleteEmployee(id);
+      if (!response.success) {
+        toast.error(response.message);
+        return;
+      }
+      toast.success("L'employé a été supprimé avec succès");
+      window.location.reload();
+    } catch (e: any) {
+      console.error(e.message);
+    }
   };
 
   if (isLoadingCompany) {
@@ -144,8 +169,8 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
                           variant={'destructive'}
                           className="bg-feu hover:bg-feu-hover"
                           onClick={() => {
-                            setOpen(true);
-                            setSelectedId(product.id);
+                            setOpenProduct(true);
+                            setSelectedProductId(product.id);
                           }}
                         >
                           Supprimer
@@ -215,10 +240,18 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
                   {user && user.role == 'PATRON' && (
                     <>
                       <TableCell className="flex justify-end gap-4">
-                        <Button variant={'outline'}>Modifier</Button>
+                        <Button variant={'outline'}>
+                          <Link href={`/employee/edit/${employee.id}`}>
+                            Modifier
+                          </Link>
+                        </Button>
                         <Button
                           variant={'destructive'}
                           className="bg-feu hover:bg-feu-hover"
+                          onClick={() => {
+                            setOpenEmployee(true);
+                            setSelectedEmployeeId(employee.id);
+                          }}
                         >
                           Supprimer
                         </Button>
@@ -264,7 +297,7 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
               </PaginationContent>
             </Pagination>
           )}
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={openProduct} onOpenChange={setOpenProduct}>
             <DialogContent className="w-full max-w-sm bg-amande text-marine">
               <DialogHeader>
                 <DialogTitle>Supprimer le produit ?</DialogTitle>
@@ -273,14 +306,38 @@ const CompanyInfo = ({ id: id }: CompanyInfoProps) => {
               <DialogFooter>
                 <Button
                   variant={'outline'}
-                  onClick={() => setOpen(false)}
+                  onClick={() => setOpenProduct(false)}
                   className="border-marine/50"
                 >
                   Annuler
                 </Button>
                 <Button
                   variant={'destructive'}
-                  onClick={() => handleDeleteProduct(selectedId)}
+                  onClick={() => handleDeleteProduct(selectedProductId)}
+                  className="bg-feu hover:bg-feu-hover"
+                >
+                  Supprimer
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={openEmployee} onOpenChange={setOpenEmployee}>
+            <DialogContent className="w-full max-w-sm bg-amande text-marine">
+              <DialogHeader>
+                <DialogTitle>Supprimer l'employé ?</DialogTitle>
+              </DialogHeader>
+              <p>Etes vous sur de vouloir supprimer cet employé ?</p>
+              <DialogFooter>
+                <Button
+                  variant={'outline'}
+                  onClick={() => setOpenEmployee(false)}
+                  className="border-marine/50"
+                >
+                  Annuler
+                </Button>
+                <Button
+                  variant={'destructive'}
+                  onClick={() => handleDeleteEmployee(selectedEmployeeId)}
                   className="bg-feu hover:bg-feu-hover"
                 >
                   Supprimer

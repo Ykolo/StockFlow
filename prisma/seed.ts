@@ -26,7 +26,7 @@ async function main() {
       name: 'Admin',
       email: 'admin@admin.com',
       password: hashedPassword,
-      role: 'patron',
+      role: 'PATRON',
       companyId: companies[0].id,
     },
   });

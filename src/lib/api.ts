@@ -72,3 +72,24 @@ export const fetchProductById = async (id: string) => {
     throw error;
   }
 };
+
+export const fetchEmployeeById = async (id: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.LOCAL_URL}/api/employee/${id}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch employee');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching employee:', error);
+    throw error;
+  }
+};
